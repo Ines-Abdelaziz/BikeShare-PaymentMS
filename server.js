@@ -32,25 +32,28 @@ async function startServer() {
     
 
     app.post('/charge', async (req, res) => {
-        const { userId, amount, paymentMethod } = req.body;
+        const { userId, amount } = req.body;
       
         try {
           // Create a Stripe charge
           //create a stripe payment token  
-           const token = await stripe.tokens.create({
+           
+
+          //create a stripe payment method
+        
+          const paymentMethod = await stripe.paymentMethods.create({
+            type: 'card',
             card: {
               number: '4242424242424242',
               exp_month: 12,
-              exp_year: 2021,
+              exp_year: 2023,
               cvc: '123',
             },
           });
-
-          
           const paymentIntent = await stripe.paymentIntents.create({
             amount,
             currency: 'usd',
-            payment_method: token, // Use the token as the payment method
+            payment_method: paymentMethod.id, 
             confirm: true, // Confirm the payment immediately
           });
       
